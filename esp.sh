@@ -5,23 +5,21 @@
 # @Author: Kimler (KC) Corey
 # @Date: 2014
 # @Contact: kimler[at]gmail[dot]com
-# @version: 1.0
+# @version: 1.01
 #
 # Special thanks to the following <github names>:
 # zenpuppet, <kimlercorey>, etc... 
 
 #                         
-#     .oPYo. .oPYo.  .oPYo. 
-#     8.     8       8    8 
-#     `boo   `Yooo. o8YooP' 
-#     .P         `8  8      
-#     8           8  8      
-#     `YooP' `YooP'  8      
-#:.....::.....::..:::::..::::::
-#::: Terminal MDFind Launcher::
-#::::::::::::::::::::::::::::::
-
-
+#      .oPYo. .oPYo.  .oPYo. 
+#      8.     8       8    8 
+#      `boo   `Yooo. o8YooP' 
+#      .P         `8  8      
+#      8           8  8      
+#      `YooP' `YooP'  8      
+# :.....::.....::..:::::..::::::::
+# ::: Terminal MDFind Launcher :::
+# ::::::::::::::::::::::::::::::::
 
 prefs="$HOME/.esp_profile"
 search_term=""
@@ -52,6 +50,11 @@ EOF
 
 # Load the preferences into memory
 function loadPrefs {
+
+  if [ ! -f "$prefs" ]; then
+    createPrefs
+  fi
+
   echo "loading prefs file"
   IFS=$'\n' read -d '' -r -a approved < $prefs
 }
@@ -121,7 +124,7 @@ function loadApp {
     quiet_mode=true
   fi
 
-  confirm "open $APPNAME from keyword '$1'" && `open -b$APPNAME $3`
+  confirm "\[\033[0;33m\]open $APPNAME from keyword '$1'" && `open -b$APPNAME $3`
 }
 
 # Walk through flag options
@@ -160,7 +163,7 @@ search_term=$1
 target_action=${@:2} #included all arguments after search_term
 
 # Show help if someone ONLY types the command
-[[ $# -eq 0 ]] && usage
+[[ $# -eq 0 ]] && usage && exit
 
 is_app_exists "$1"
 
