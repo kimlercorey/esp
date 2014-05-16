@@ -5,10 +5,6 @@
       .P         `8  8      
       8           8  8      
       `YooP' `YooP'  8      
- :.....::.....::..:::::..::::::::
- ::: Terminal MDFind Launcher :::
- ::::::::::::::::::::::::::::::::
-
 
 Installing esp is easy to do. Ensure wget is installed, add ~/bin to the local users executable path and download it.
 
