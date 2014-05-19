@@ -148,7 +148,6 @@ case "$opt" in
         exit 0
         ;;
     d)  delete=true
-        exit 0
         ;;
     '?')
         usage >&2
