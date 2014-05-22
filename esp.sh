@@ -5,7 +5,7 @@
 # @Author: Kimler (KC) Corey
 # @Date: 2014
 # @Contact: kimler[at]gmail[dot]com
-# @version: 1.02
+# @version: 1.03
 #
 # Special thanks to the following <github names>:
 # zenpuppet, <kimlercorey>, etc... 
@@ -33,6 +33,9 @@ go=true; write=false; list=false; delete=false; quiet_mode=false; OPTIND=1
 
 # Show help information
 usage() {
+
+  thisVersion
+
 cat << EOF
 
 Usage: ${0##*/} [-hvqwldu] search_term [target_action]
@@ -48,6 +51,8 @@ target_action (ie filename, url, etc) to the program once it is executed.
      -d          delete search term from auto_act file
      -u          check for updates to program
 
+[ Version $THISVERSION ]
+     
 EOF
 }                
 
