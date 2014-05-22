@@ -5,7 +5,7 @@
 # @Author: Kimler (KC) Corey
 # @Date: 2014
 # @Contact: kimler[at]gmail[dot]com
-# @version: 1.03
+# @version: 1.04
 #
 # Special thanks to the following <github names>:
 # zenpuppet, <kimlercorey>, etc... 
@@ -22,6 +22,7 @@
 # ::::::::::::::::::::::::::::::::
 
 prefs="$HOME/.esp_profile"
+REPO="https://raw.github.com/kimlercorey/esp/master/esp.sh"
 search_term=""
 target_action=""
 APPNAME=""
@@ -86,7 +87,7 @@ thisFile=`cat ~/bin/${0##*/}`
 
 function onlineVersion {
 
- thisFile=$(wget https://raw.github.com/kimlercorey/esp/master/esp.sh -q -O -);
+thisFile=$(curl -Ls $REPO);
 
    getNext=0
    version=0
@@ -113,7 +114,10 @@ function onlineVersion {
 
 function updateScript {
   echo " UPDATING . . ."
-  curl -L -o ~/bin/esp-0 https://raw.github.com/kimlercorey/esp/master/esp.sh && chmod +x ~/bin/esp-0 && mv ~/bin/esp-0 ~/bin/esp && echo "UPDATED TO VERSION $ONLINEVERSION."
+  curl -Ls -o ~/bin/esp-0 $REPO \
+      && chmod +x ~/bin/esp-0 \
+      && mv ~/bin/esp-0 ~/bin/esp \
+      && echo "UPDATED TO VERSION $ONLINEVERSION."
 
   exit
 }
