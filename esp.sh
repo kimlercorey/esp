@@ -5,7 +5,7 @@
 # @Author: Kimler (KC) Corey
 # @Date: 2014
 # @Contact: kimler[at]gmail[dot]com
-# @version: 1.01
+# @version: 1.02
 #
 # Special thanks to the following <github names>:
 # zenpuppet, <kimlercorey>, etc... 
@@ -25,6 +25,8 @@ prefs="$HOME/.esp_profile"
 search_term=""
 target_action=""
 APPNAME=""
+THISVERSION=""
+ONLINEVERSION=""
 
 # possible actions = write, go | list | delete
 go=true; write=false; list=false; delete=false; quiet_mode=false; OPTIND=1
@@ -33,7 +35,7 @@ go=true; write=false; list=false; delete=false; quiet_mode=false; OPTIND=1
 usage() {
 cat << EOF
 
-Usage: ${0##*/} [-hvqwld] search_term [target_action]
+Usage: ${0##*/} [-hvqwldu] search_term [target_action]
 Search OSX bundle on local systems and run the program executable passing the 
 target_action (ie filename, url, etc) to the program once it is executed.
      
@@ -44,9 +46,87 @@ target_action (ie filename, url, etc) to the program once it is executed.
      -w          write this esp association to auto_act file
      -l          list all associations from auto_act file
      -d          delete search term from auto_act file
+     -u          check for updates to program
 
 EOF
 }                
+
+
+function thisVersion {
+
+thisFile=`cat ~/bin/${0##*/}`
+ 
+  getNext=0
+  version=0
+   
+  for w in $thisFile
+  do
+             
+    if [ "$getNext" == "1" ]; then
+      version="$w"
+      getNext="0"
+  fi
+                                                      
+  if [ "$w" == "@version:" ]; then
+    getNext="1"
+  fi
+                                                                                      
+  done
+                                                                                       
+  THISVERSION="$version"                                                                                     
+
+  return 
+
+}
+
+function onlineVersion {
+
+ thisFile=$(wget https://raw.github.com/kimlercorey/esp/master/esp.sh -q -O -);
+
+   getNext=0
+   version=0
+
+   for w in $thisFile
+   do
+
+     if [ "$getNext" == "1" ]; then
+       version="$w"
+       getNext="0"
+   fi
+
+   if [ "$w" == "@version:" ]; then
+     getNext="1"
+   fi
+
+   done
+
+   ONLINEVERSION="$version"
+
+   return
+
+ } 
+
+function updateScript {
+  echo " UPDATING . . ."
+  curl -L -o ~/bin/esp-0 https://raw.github.com/kimlercorey/esp/master/esp.sh && chmod +x ~/bin/esp-0 && mv ~/bin/esp-0 ~/bin/esp && echo "UPDATED TO VERSION $ONLINEVERSION."
+
+  exit
+}
+
+
+function compareThisVersionToTheNewest {
+
+thisVersion
+onlineVersion
+
+if [ $THISVERSION != $ONLINEVERSION ]; then
+    confirm "You are running version $THISVERSION and $ONLINEVERSION is available. Would you like to upgrade? " && updateScript
+else
+    echo "your version $THISVERSION is the most current version avaiable."
+fi
+    
+return
+}
 
 # Load the preferences into memory
 function loadPrefs {
@@ -102,8 +182,7 @@ function confirm { # call with a prompt string or use a default
 
 function is_app_exists {
   app="$1"    
-  APPNAME=$(mdls -name kMDItemCFBundleIdentifier \
-    -raw "$(mdfind "(kMDItemContentTypeTree=com.apple.application) && (kMDItemDisplayName == '$1*'cdw)" | head -1)")
+  APPNAME=$(mdls -name kMDItemCFBundleIdentifier -raw "$(mdfind "(kMDItemContentTypeTree=com.apple.application) && (kMDItemDisplayName == '$1*'cdw)" | head -1)")
 
   if [ "$APPNAME" != ": could not find ." ]; then
     return 0
@@ -124,11 +203,11 @@ function loadApp {
     quiet_mode=true
   fi
 
-  confirm "\[\033[0;33m\]open $APPNAME from keyword '$1'" && `open -b$APPNAME $3`
+  confirm "open $APPNAME from keyword '$1'" && `open -b$APPNAME $3`
 }
 
 # Walk through flag options
-while getopts "hvqwldp:" opt; do
+while getopts "uhvqwldp:" opt; do
 case "$opt" in
     h)
         usage
@@ -148,6 +227,10 @@ case "$opt" in
         exit 0
         ;;
     d)  delete=true
+        ;;
+    u)  
+        compareThisVersionToTheNewest
+        exit 0
         ;;
     '?')
         usage >&2
