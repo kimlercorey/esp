@@ -36,8 +36,7 @@ go=true; write=false; list=false; delete=false; quiet_mode=false; OPTIND=1
 usage() {
 
   thisVersion
-
-cat << EOF
+  cat << EOF
 
 Usage: ${0##*/} [-hvqwldu] search_term [target_action]
 Search OSX bundle on local systems and run the program executable passing the 
@@ -113,45 +112,39 @@ thisFile=$(curl -Ls $REPO);
  } 
 
 function updateScript {
-  echo " UPDATING . . ."
+  echo "UPDATING . . ."
   curl -Ls -o ~/bin/esp-0 $REPO \
       && chmod +x ~/bin/esp-0 \
       && mv ~/bin/esp-0 ~/bin/esp \
       && echo "UPDATED TO VERSION $ONLINEVERSION."
-
-  exit
 }
 
-
+# Compares declared local version to that in repo
 function compareThisVersionToTheNewest {
+  thisVersion
+  onlineVersion
 
-thisVersion
-onlineVersion
-
-if [ $THISVERSION != $ONLINEVERSION ]; then
+  if [ $THISVERSION != $ONLINEVERSION ]; then
     confirm "You are running version $THISVERSION and $ONLINEVERSION is available. Would you like to upgrade? " && updateScript
-else
+  else
     echo "your version $THISVERSION is the most current version avaiable."
-fi
-    
-return
+  fi
 }
 
 # Load the preferences into memory
 function loadPrefs {
 
+  # if !exist create new pref file
   if [ ! -f "$prefs" ]; then
     createPrefs
   fi
 
-  echo "loading prefs file"
   IFS=$'\n' read -d '' -r -a approved < $prefs
 }
 
 # Create a preference file into file $prefs
 function createPrefs {
   echo "# list approved esp associations ( $prefs )" > $prefs  
-  echo "creating prefs file"
 }
 
 # show preferences (and create/load them if nec. first)
@@ -213,9 +206,10 @@ function loadApp {
   fi
 
   confirm "open $APPNAME from keyword '$1'" && `open -b$APPNAME $3`
+
 }
 
-# Walk through flag options
+# Walk through flag options`
 while getopts "uhvqwldp:" opt; do
 case "$opt" in
     h)
