@@ -5,7 +5,7 @@
 # @Author: Kimler (KC) Corey
 # @Date: 2014
 # @Contact: kimler[at]gmail[dot]com
-# @version: 1.04
+# @version: 1.05
 #
 # Special thanks to the following <github names>:
 # zenpuppet, <kimlercorey>, etc... 
@@ -23,6 +23,7 @@
 
 prefs="$HOME/.esp_profile"
 REPO="https://raw.github.com/kimlercorey/esp/master/esp.sh"
+ALIAS="$HOME/.bash_profile"
 search_term=""
 target_action=""
 APPNAME=""
@@ -44,7 +45,8 @@ target_action (ie filename, url, etc) to the program once it is executed.
      
      -h          display this help info then exit
      -v          verbose mode.
-     -p          print alias add cmd
+     -p          print alias cmd
+     -a          add alias cmd to ~/.bashrc
      -q          quiet mode - do not ask to confirm
      -w          write this esp association to auto_act file
      -l          list all associations from auto_act file
@@ -56,10 +58,9 @@ target_action (ie filename, url, etc) to the program once it is executed.
 EOF
 }                
 
-
+# retrieve and set this version of the program
 function thisVersion {
-
-thisFile=`cat ~/bin/${0##*/}`
+  thisFile=`cat ~/bin/${0##*/}`
  
   getNext=0
   version=0
@@ -70,47 +71,42 @@ thisFile=`cat ~/bin/${0##*/}`
     if [ "$getNext" == "1" ]; then
       version="$w"
       getNext="0"
-  fi
+    fi
                                                       
-  if [ "$w" == "@version:" ]; then
-    getNext="1"
-  fi
+    if [ "$w" == "@version:" ]; then
+      getNext="1"
+    fi
                                                                                       
   done
                                                                                        
   THISVERSION="$version"                                                                                     
-
-  return 
-
 }
 
+# retrieve and set the version in the repo
 function onlineVersion {
+  thisFile=$(curl -Ls $REPO);
 
-thisFile=$(curl -Ls $REPO);
+  getNext=0
+  version=0
 
-   getNext=0
-   version=0
+  for w in $thisFile
+  do
 
-   for w in $thisFile
-   do
+    if [ "$getNext" == "1" ]; then
+      version="$w"
+      getNext="0"
+    fi
 
-     if [ "$getNext" == "1" ]; then
-       version="$w"
-       getNext="0"
-   fi
+    if [ "$w" == "@version:" ]; then
+      getNext="1"
+    fi
 
-   if [ "$w" == "@version:" ]; then
-     getNext="1"
-   fi
+  done
 
-   done
-
-   ONLINEVERSION="$version"
-
-   return
-
+  ONLINEVERSION="$version"
  } 
 
+# perform update
 function updateScript {
   echo "UPDATING . . ."
   curl -Ls -o ~/bin/esp-0 $REPO \
@@ -157,13 +153,23 @@ function showPrefs {
   loadPrefs
 
   printf '%s\n' "${approved[@]}"
-
 }
 
-# Output the alias that user may manually add to their aliases list
-# todo: (possibly) add prompt to add alias to list programatically  
+# Output the alias that user may manually add to their aliases list  
 function print_alias {
- printf "alias %s='esp -q %s \$1'\n" "$1" "$1"
+  printf "alias %s='esp -q %s \$1'\n" "$1" "$1"
+}
+
+# Output the alias to .bashrc
+function print_alias_to_bashrc {
+  if [[ ! -f $ALIAS ]]; then
+    touch $ALIAS
+  fi
+
+  confirm "Create Alias in $ALIAS for command $1 " && echo "alias $1='esp -q $1 \$1'" >> $ALIAS 
+  
+  source $ALIAS
+
 }
 
 # Prompt for user input with default prompt
@@ -182,6 +188,7 @@ function confirm { # call with a prompt string or use a default
    esac
 }
 
+# Returns success state and result itself in $APPNAME
 function is_app_exists {
   app="$1"    
   APPNAME=$(mdls -name kMDItemCFBundleIdentifier -raw "$(mdfind "(kMDItemContentTypeTree=com.apple.application) && (kMDItemDisplayName == '$1*'cdw)" | head -1)")
@@ -193,24 +200,22 @@ function is_app_exists {
   return 1
 }  
 
+# Ask to open result
 function loadApp {
-
   PARTS=$(awk "/^$1[ ]/" $prefs)
 
   IFS=' ' read -a PARTS <<< "${PARTS}"
 
   if [ "${PARTS[1]}" ]; then
-
     APPNAME=${PARTS[1]}
     quiet_mode=true
   fi
 
   confirm "open $APPNAME from keyword '$1'" && `open -b$APPNAME $3`
-
 }
 
-# Walk through flag options`
-while getopts "uhvqwldp:" opt; do
+#`# Walk through flag options
+while getopts ":uhvqwldpa" opt; do
 case "$opt" in
     h)
         usage
@@ -219,6 +224,9 @@ case "$opt" in
     v)  verbose=true
         ;;
     p)  print_alias $2
+        exit 0
+        ;;
+    a)  print_alias_to_bashrc $2
         exit 0
         ;;
     q)  quiet_mode=true
@@ -235,8 +243,8 @@ case "$opt" in
         compareThisVersionToTheNewest
         exit 0
         ;;
-    '?')
-        usage >&2
+    \?)
+        echo "\nInvalid option: -$OPTARG" && usage >&2
         exit 0
         ;;
     esac
