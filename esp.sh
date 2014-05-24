@@ -23,7 +23,8 @@
 
 prefs="$HOME/.esp_profile"
 REPO="https://raw.github.com/kimlercorey/esp/master/esp.sh"
-ALIAS="$HOME/.bash_profile"
+ALIAS="$HOME/.alias"
+PROFILE="$HOME/.bash_profile"
 search_term=""
 target_action=""
 APPNAME=""
@@ -70,7 +71,7 @@ function thisVersion {
              
     if [ "$getNext" == "1" ]; then
       version="$w"
-      getNext="0"
+      break
     fi
                                                       
     if [ "$w" == "@version:" ]; then
@@ -94,7 +95,7 @@ function onlineVersion {
 
     if [ "$getNext" == "1" ]; then
       version="$w"
-      getNext="0"
+      break
     fi
 
     if [ "$w" == "@version:" ]; then
@@ -164,12 +165,12 @@ function print_alias {
 function print_alias_to_bashrc {
   if [[ ! -f $ALIAS ]]; then
     touch $ALIAS
+    echo "# ALIAS FILES GENERATED FROM ESP" >> $ALIAS
+    echo "shopt -s expand_aliases\n\n" >> $ALIAS
+    echo "source $ALIAS" >> $PROFILE 
   fi
 
-  confirm "Create Alias in $ALIAS for command $1 " && echo "alias $1='esp -q $1 \$1'" >> $ALIAS 
-  
-  source $ALIAS
-
+  confirm "Create Alias in $ALIAS for command $1 " && echo "alias $1='esp -q $1 \$1'" >> $ALIAS  
 }
 
 # Prompt for user input with default prompt
