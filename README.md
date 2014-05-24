@@ -9,7 +9,7 @@
 
 ## Synopsis
 
-ESP is an OSX terminal convenience script that allows users to easily launch OSX programs from command line without knowing the entire OSX Bundle Identifier Name. It associates user aliases to OSXs kMDItemDisplayName mechanism for an intuitive way to launch programs.  
+ESP is an OSX terminal convenience script that allows users to easily launch OSX programs from the command line without knowing the entire OSX Bundle Identifier Name. It associates user aliases to OSXs program bundles via the kMDItemDisplayName mechanism for an intuitive way to launch programs.  
 
 ## Motivation
 
