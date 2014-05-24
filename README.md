@@ -11,9 +11,13 @@
 
 ESP is an OSX terminal convenience script that allows users to easily launch OSX programs from command line without knowing the entire OSX Bundle Identifier Name. It associates user aliases to OSXs kMDItemDisplayName mechanism for an intuitive way to launch programs.  
 
-## Motivaition
+## Motivation
 
-When deep into the directory tree, it was annoying to open a program and have to re-navigate down the tree to find the program to modify. Also wanted a way to launch a photoshop by typing 'photshop' or sublime by typing 'sublime' or whatever-the-heck-I-want-to-run by typing 'whatever-part-of-the-program-name-I-know-without-needing-to-have-first-made-an-alias'. For those who consider it more convernient to launch a program from the terminal than to reach for the mouse then go to the Dock or Applications , etc this program might be something which would appeal to you.
+When deep into the directory tree in the console, it was annoying to open a program and have to re-navigate down the tree to find the program to modify. I also wanted a way to launch photoshop by typing 'photshop' or sublime by typing 'sublime' or whatever-the-heck-I-want-to-run by typing 'whatever-part-of-the-program-name-I-know-without-needing-to-first-have-made-an-alias'. If you think it would be more convenient to simply launch a program from the terminal than to reach for the mouse and go the dock or applications then open your document or click open the folder or select the new document template, then this program might be something which would appeal to you.
+
+## Outcomes / Benefits
+
+Go through list of benefits to those who take on learning / using this script
 
 ## Examples
 
@@ -42,7 +46,7 @@ todo: Add some tests that can be used to verify all features work
 
 ## Contributors
 
-The easiest way to get involved is to fork and create a pull request. Also, do add yourself to the authors line or special thanks line too depending on where you prefer to be included. We'll handle inrementing the version on this side. All involvement is always welcome and there is always room for improvement. 
+The easiest way to get involved is to fork and create a pull request. Also, do add yourself to the authors line or special thanks line too depending on where you prefer to be included. We'll handle incrementing the version on this side. Your involvement is welcome. I am always looking for ways to improve the code. 
 
 ## License
 
