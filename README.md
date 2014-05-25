@@ -17,7 +17,13 @@ When deep into the directory tree in the console, it was annoying to open a prog
 
 ## Outcomes / Benefits
 
-Go through list of benefits to those who take on learning / using this script
+* utilize "dynamic references" to load software from the terminal window
+* save your favorite references
+* list your existing references
+* delete references from your saved list
+* print the equivilent alias for a dynamic reference
+* create an aliases for dynamic references
+* update the esp core software with ease
 
 ## Examples
 
