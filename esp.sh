@@ -5,7 +5,7 @@
 # @Author: Kimler (KC) Corey
 # @Date: 2014
 # @Contact: kimler[at]gmail[dot]com
-# @version: 1.05
+# @version: 1.06
 #
 # Special thanks to the following <github names>:
 # zenpuppet, <kimlercorey>, etc... 
