@@ -5,7 +5,7 @@
 # @Author: Kimler (KC) Corey
 # @Date: 2014
 # @Contact: kimler[at]gmail[dot]com
-# @version: 1.06
+# @version: 1.07
 #
 # Special thanks to the following <github names>:
 # zenpuppet, <kimlercorey>, etc... 
@@ -159,18 +159,34 @@ print_alias() {
 
 # Output the alias to .bashrc
 print_alias_to_bashrc() {
+# a number of possibilities based on the number of passed args
+# 0 args - return an error
+# 1 arg - create alias to esp command of same string (e.g. alias photoshop = "esp photoshop $1")
+# 2 args - create alias to esp command of second string ( e.g alias browser = "esp chrome $1")
+# 3+ args - create alias to esp command with static data doc for program to load (e.g. alias web = 'firefox http://www.google.com')
+
+  # Create Alias File and add to bash profile if alias file doesn't exist
   if [[ ! -f $ALIAS ]]; then
     touch "$ALIAS"
     echo "# ALIAS FILES GENERATED FROM ESP" >> "$ALIAS"
     echo "source $ALIAS" >> "$PROFILE" 
   fi
 
-  confirm "Create Alias in $ALIAS for command $1 " && echo "alias $1='esp -q $1 \$1'" >> "$ALIAS"  
+  case "$#" in
+      0) echo "Error: Cannot create an alias without name"
+         exit 1;
+          ;;
+      1) confirm "Create Alias in $ALIAS for command $1" && echo "alias $1='esp -q $1 \$1'" >> "$ALIAS"
+          ;;
+      2) confirm "Create Alias in $ALIAS: alias $1 = esp -q $2" && echo "alias $1='esp -q $2 \$1'" >> "$ALIAS"
+          ;;
+      *) confirm "Create Alias in $ALIAS: alias $1 = esp -q $2 ${@:3}" && echo "alias $1='esp -q $2 ${@:3}'" >> "$ALIAS"
+          ;;
+  esac
 
   # Id like to source this immediately avaiable after added but nothing seems to work
   # except eval as a function wihich just seems wrong - until there is a solution for that
   # user will need to start a new shell to invoke their added aliases
-
 }
 
 # Prompt for user input with default prompt
@@ -215,10 +231,9 @@ loadApp() {
 }
 
 #`# Walk through flag options
-while getopts ":uhvqwldpa" opt; do
+while getopts ":uhvqwldpaA" opt; do
 case "$opt" in
-    h)
-        usage
+    h)  usage
         exit 0
         ;;
     v)  verbose=true
@@ -226,7 +241,7 @@ case "$opt" in
     p)  print_alias "$2"
         exit 0
         ;;
-    a)  print_alias_to_bashrc "$2"
+    a)  print_alias_to_bashrc ${@:2}  
         exit 0
         ;;
     q)  quiet_mode=true
@@ -239,12 +254,10 @@ case "$opt" in
         ;;
     d)  delete=true
         ;;
-    u)  
-        compareThisVersionToTheNewest
+    u)  compareThisVersionToTheNewest
         exit 0
         ;;
-    \?)
-        echo "\nInvalid option: -$OPTARG" && usage >&2
+    \?) echo "\nInvalid option: -$OPTARG" && usage >&2
         exit 0
         ;;
     esac
