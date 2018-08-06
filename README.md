@@ -44,11 +44,11 @@ Installing esp is easy to do. Ensure wget is installed, add ~/bin to the local u
 
      if not: `echo 'export PATH=$PATH:~/bin'  >> ~/.bash_profile; export PATH=$PATH:~/bin`
 
- 3. Once ready to install - `wget -P ~/bin/ —output-document=esp https://raw.github.com/kimlercorey/esp/master/esp.sh; mv ~/bin/   esp.sh ~/bin/esp; chmod +x ~/bin/esp;`
+ 3. Once ready to install - `wget -P ~/bin/ —output-document=esp https://raw.github.com/kimlercorey/esp/master/esp.sh; mv ~/bin/esp.sh ~/bin/esp; chmod +x ~/bin/esp;`
 
 ## Tests
 
-todo: Add some tests that can be used to verify all features work
+Once installed type the name of your favorite app to start it!
 
 ## Contributors
 
